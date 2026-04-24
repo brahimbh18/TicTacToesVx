@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="12dp">
+
+    <Button
+        android:id="@+id/btnLoadInvitations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/load_invitations" />
+
+    <EditText
+        android:id="@+id/etInvitationId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/invitation_id_hint" />
+
+    <Button
+        android:id="@+id/btnAcceptInvitation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/accept" />
+
+    <Button
+        android:id="@+id/btnDeclineInvitation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/decline" />
+
+    <TextView
+        android:id="@+id/tvInvitations"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/empty_state" />
+</LinearLayout>
