@@ -1,12 +1,12 @@
 package dto
 
 type CreateMatchRequest struct {
-Mode         string  `json:"mode"`
-BoardSize    int     `json:"boardSize"`
-AIDifficulty string  `json:"aiDifficulty"`
-InviteeUserID *string `json:"inviteeUserId"`
+	Mode          string  `json:"mode"`
+	BoardSize     int     `json:"boardSize"`
+	AIDifficulty  string  `json:"aiDifficulty"`
+	InviteeUserID *string `json:"inviteeUserId"`
 }
 
 type MoveRequest struct {
-CellIndex int `json:"cellIndex"`
+	CellIndex int `json:"cellIndex"`
 }
