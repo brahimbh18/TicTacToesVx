@@ -1,0 +1,5 @@
+INSERT INTO users (id, username, password_hash)
+VALUES
+  ('00000000-0000-0000-0000-000000000001', 'demo_x', '$2a$10$4vbgS9n7xjUW6xg4ffEoNuUDv5XhPCmQ1Ioe7feY7n67paNTK35si'),
+  ('00000000-0000-0000-0000-000000000002', 'demo_o', '$2a$10$4vbgS9n7xjUW6xg4ffEoNuUDv5XhPCmQ1Ioe7feY7n67paNTK35si')
+ON CONFLICT (username) DO NOTHING;

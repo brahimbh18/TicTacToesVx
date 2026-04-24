@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: tictactoesvx
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build:
+      context: .
+    environment:
+      APP_PORT: 8080
+      APP_ENV: development
+      JWT_SECRET: change-me
+      DATABASE_URL: postgres://postgres:postgres@postgres:5432/tictactoesvx?sslmode=disable
+      RATE_LIMIT_AUTH_RPS: 5
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:

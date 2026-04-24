@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: TicTacToesVx Backend API
+  version: v1
+servers:
+  - url: /api/v1
+paths:
+  /auth/register:
+    post:
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [username, password]
+              properties:
+                username: { type: string }
+                password: { type: string }
+      responses:
+        '201': { description: Created }
+  /auth/login:
+    post:
+      tags: [auth]
+      responses:
+        '200': { description: OK }
+  /users/me:
+    get:
+      tags: [users]
+      responses:
+        '200': { description: OK }
+  /users/search:
+    get:
+      tags: [users]
+      parameters:
+        - in: query
+          name: username
+          schema: { type: string }
+      responses:
+        '200': { description: OK }
+  /friends:
+    get:
+      tags: [friends]
+      responses:
+        '200': { description: OK }
+  /friends/requests:
+    post:
+      tags: [friends]
+      responses:
+        '201': { description: Created }
+  /friends/requests/incoming:
+    get:
+      tags: [friends]
+      responses:
+        '200': { description: OK }
+  /friends/requests/{requestId}/accept:
+    post:
+      tags: [friends]
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /friends/requests/{requestId}/decline:
+    post:
+      tags: [friends]
+      parameters:
+        - in: path
+          name: requestId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /invitations:
+    post:
+      tags: [invitations]
+      responses:
+        '201': { description: Created }
+  /invitations/incoming:
+    get:
+      tags: [invitations]
+      responses:
+        '200': { description: OK }
+  /invitations/{invitationId}/accept:
+    post:
+      tags: [invitations]
+      parameters:
+        - in: path
+          name: invitationId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /invitations/{invitationId}/decline:
+    post:
+      tags: [invitations]
+      parameters:
+        - in: path
+          name: invitationId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /matches:
+    post:
+      tags: [matches]
+      responses:
+        '201': { description: Created }
+  /matches/{matchId}:
+    get:
+      tags: [matches]
+      parameters:
+        - in: path
+          name: matchId
+          required: true
+          schema: { type: string, format: uuid }
+      responses:
+        '200': { description: OK }
+  /matches/{matchId}/moves:
+    post:
+      tags: [matches]
+      responses:
+        '200': { description: OK }
+  /matches/{matchId}/resign:
+    post:
+      tags: [matches]
+      responses:
+        '200': { description: OK }

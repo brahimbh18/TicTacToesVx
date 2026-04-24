@@ -1,0 +1,18 @@
+{
+  "slice_id": "S0",
+  "task_id": "A-S0-T02",
+  "engineer_id": "junior_a",
+  "branch": "copilot/backend-agent-a-tasks",
+  "commits": [],
+  "files_added": [],
+  "files_modified": [],
+  "files_deleted": [],
+  "api_endpoints_added": [],
+  "api_endpoints_modified": [],
+  "api_endpoints_removed": [],
+  "migrations_added": ["internal/db/migrations/0001_init.sql"],
+  "env_vars_added": ["APP_ENV", "APP_PORT", "JWT_SECRET", "DATABASE_URL", "RATE_LIMIT_AUTH_RPS"],
+  "breaking_changes": [],
+  "related_tasks": ["A-S0-T02 -> B-S1-T01"],
+  "pr_number": null
+}
