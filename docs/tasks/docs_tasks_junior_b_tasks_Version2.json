@@ -1,0 +1,309 @@
+{
+  "engineer": {
+    "id": "junior_b",
+    "role": "Android Engineer",
+    "stack": ["Java", "Android", "MVVM"]
+  },
+  "traceability_protocol": {
+    "version": "1.0",
+    "objective": "Ensure every Android/UI integration change is reproducible, auditable, and understandable by any LLM/agent or human reviewer.",
+    "required_artifacts_per_task": [
+      "docs/traceability/junior_b/<slice_id>/<task_id>/worklog.md",
+      "docs/traceability/junior_b/<slice_id>/<task_id>/change_manifest.json",
+      "docs/traceability/junior_b/<slice_id>/<task_id>/test_evidence.md",
+      "docs/traceability/junior_b/<slice_id>/<task_id>/handoff.md"
+    ],
+    "worklog_template_rules": {
+      "must_include_sections": [
+        "Task Header",
+        "Intent",
+        "Files Changed",
+        "Screen/Flow Impact",
+        "API Consumption Impact",
+        "State Management Notes",
+        "Risks and Tradeoffs",
+        "Next Step"
+      ],
+      "task_header_fields": [
+        "slice_id",
+        "task_id",
+        "engineer_id",
+        "branch_name",
+        "commit_shas",
+        "date_utc",
+        "status"
+      ]
+    },
+    "change_manifest_schema": {
+      "slice_id": "string",
+      "task_id": "string",
+      "engineer_id": "junior_b",
+      "branch": "string",
+      "commits": ["string"],
+      "files_added": ["string"],
+      "files_modified": ["string"],
+      "files_deleted": ["string"],
+      "screens_added_or_changed": ["string"],
+      "viewmodels_added_or_changed": ["string"],
+      "repositories_added_or_changed": ["string"],
+      "endpoints_consumed": ["METHOD /path"],
+      "ui_states_added": ["loading|success|error|empty|disabled"],
+      "breaking_ui_changes": ["string"],
+      "related_tasks": ["string"],
+      "pr_number": "number|null"
+    },
+    "test_evidence_rules": {
+      "must_include": [
+        "Build command and variant",
+        "Device/emulator details",
+        "Manual test matrix by screen",
+        "Network scenarios tested (success/error/timeout/unauthorized)",
+        "Screenshots or textual output summary"
+      ],
+      "manual_test_format": [
+        "Preconditions",
+        "Steps",
+        "Expected Result",
+        "Actual Result"
+      ]
+    },
+    "handoff_rules": {
+      "must_include": [
+        "What is done",
+        "What backend contract version was used",
+        "What is pending",
+        "Known UI limitations",
+        "Fallback behavior for API failures"
+      ]
+    },
+    "naming_conventions": {
+      "slice_id_format": "S0|S1|S2|S3|S4|S5",
+      "task_id_format": "B-S<slice_number>-T<nn>",
+      "branch_format": "feat/<task_id>-<short-kebab-desc>",
+      "commit_message_format": "<task_id>: <imperative summary>",
+      "artifact_path_format": "docs/traceability/junior_b/<slice_id>/<task_id>/..."
+    },
+    "status_model": [
+      "todo",
+      "in_progress",
+      "blocked",
+      "ready_for_review",
+      "done"
+    ],
+    "update_frequency": {
+      "worklog": "at least once per day and on every status change",
+      "change_manifest": "updated with every commit batch",
+      "test_evidence": "updated after every test run",
+      "handoff": "required before PR review request"
+    },
+    "cross_agent_linking_rules": {
+      "every_task_must_reference": [
+        "upstream_dependency_task_ids",
+        "downstream_consumer_task_ids"
+      ],
+      "upstream_example": "If UI consumes endpoint, link the backend task that implements it.",
+      "link_format": "B-Sx-Tnn -> A-Sx-Tnn (upstream)"
+    },
+    "review_gate_checklist": [
+      "All required artifacts exist",
+      "change_manifest matches actual diff",
+      "api-mapping.md updated when endpoint consumption changes",
+      "UI states documented for error/loading/empty",
+      "Test evidence included and reproducible",
+      "Handoff complete and linked to upstream/downstream tasks"
+    ]
+  },
+  "definition_of_done": [
+    "Implementation completed for task scope",
+    "All traceability artifacts created and complete",
+    "Build and manual test evidence logged",
+    "Dependencies and upstream backend tasks linked",
+    "PR opened with task_id and artifact links"
+  ],
+  "slices": [
+    {
+      "slice_id": "S0",
+      "name": "Foundation",
+      "tasks": [
+        {
+          "task_id": "B-S0-T01",
+          "title": "Initialize Android MVVM skeleton",
+          "deliverables": [
+            "Base package structure",
+            "App entry wiring",
+            "Core layers placeholders"
+          ],
+          "depends_on": [],
+          "blocks": ["B-S0-T02", "B-S1-T01"]
+        },
+        {
+          "task_id": "B-S0-T02",
+          "title": "Navigation shell Login -> Home",
+          "deliverables": [
+            "Basic activities and navigation",
+            "Placeholder home screen"
+          ],
+          "depends_on": ["B-S0-T01"],
+          "blocks": ["B-S1-T01"]
+        },
+        {
+          "task_id": "B-S0-T03",
+          "title": "Network and token scaffolding",
+          "deliverables": [
+            "ApiClient/ApiService/AuthInterceptor",
+            "TokenStorage integration scaffold"
+          ],
+          "depends_on": ["B-S0-T01"],
+          "blocks": ["B-S1-T01"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S1",
+      "name": "Auth Vertical",
+      "tasks": [
+        {
+          "task_id": "B-S1-T01",
+          "title": "Register and login screens with ViewModels",
+          "deliverables": [
+            "LoginActivity/LoginViewModel",
+            "RegisterActivity/RegisterViewModel",
+            "AuthRepository wiring"
+          ],
+          "depends_on": ["B-S0-T02", "B-S0-T03", "A-S1-T02"],
+          "blocks": ["B-S1-T02"]
+        },
+        {
+          "task_id": "B-S1-T02",
+          "title": "Authenticated home using /users/me",
+          "deliverables": [
+            "Token persistence",
+            "Fetch and render current username",
+            "Unauthorized fallback to login"
+          ],
+          "depends_on": ["B-S1-T01", "A-S1-T03"],
+          "blocks": ["B-S2-T01"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S2",
+      "name": "Local + AI Gameplay UI",
+      "tasks": [
+        {
+          "task_id": "B-S2-T01",
+          "title": "Game screen + board rendering",
+          "deliverables": [
+            "GameActivity/GameViewModel/BoardAdapter",
+            "NxN board rendering and state"
+          ],
+          "depends_on": ["B-S1-T02", "A-S2-T01"],
+          "blocks": ["B-S2-T02"]
+        },
+        {
+          "task_id": "B-S2-T02",
+          "title": "AI mode + difficulty/board controls",
+          "deliverables": [
+            "Mode selector local vs AI",
+            "Difficulty selector easy/medium/hard",
+            "Board size selector"
+          ],
+          "depends_on": ["B-S2-T01", "A-S2-T02", "A-S2-T03", "A-S2-T04"],
+          "blocks": ["B-S3-T01"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S3",
+      "name": "Friends UI",
+      "tasks": [
+        {
+          "task_id": "B-S3-T01",
+          "title": "Search and send friend request flow",
+          "deliverables": [
+            "FriendsActivity/FriendsViewModel",
+            "Search by username",
+            "Send friend request action"
+          ],
+          "depends_on": ["B-S2-T02", "A-S3-T02", "A-S3-T03"],
+          "blocks": ["B-S3-T02"]
+        },
+        {
+          "task_id": "B-S3-T02",
+          "title": "Incoming requests accept/decline",
+          "deliverables": [
+            "Incoming requests list",
+            "Accept/decline actions"
+          ],
+          "depends_on": ["B-S3-T01", "A-S3-T04"],
+          "blocks": ["B-S3-T03"]
+        },
+        {
+          "task_id": "B-S3-T03",
+          "title": "Friends list rendering",
+          "deliverables": [
+            "Friends list from API",
+            "Empty/error/loading states"
+          ],
+          "depends_on": ["B-S3-T02", "A-S3-T05"],
+          "blocks": ["B-S4-T01"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S4",
+      "name": "Invitations + Online Gameplay UI",
+      "tasks": [
+        {
+          "task_id": "B-S4-T01",
+          "title": "Invitations inbox flow",
+          "deliverables": [
+            "InvitationsActivity/InvitationsViewModel",
+            "List incoming invitations",
+            "Accept/decline invitation actions"
+          ],
+          "depends_on": ["B-S3-T03", "A-S4-T02"],
+          "blocks": ["B-S4-T02"]
+        },
+        {
+          "task_id": "B-S4-T02",
+          "title": "Online match session bootstrap",
+          "deliverables": [
+            "Launch game from accepted invitation",
+            "Fetch initial match state"
+          ],
+          "depends_on": ["B-S4-T01", "A-S4-T03"],
+          "blocks": ["B-S4-T03"]
+        },
+        {
+          "task_id": "B-S4-T03",
+          "title": "Polling and move submission",
+          "deliverables": [
+            "Match polling strategy",
+            "Submit move action",
+            "Resign and finished state handling"
+          ],
+          "depends_on": ["B-S4-T02", "A-S4-T04"],
+          "blocks": ["B-S5-T01"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S5",
+      "name": "Polish + Documentation",
+      "tasks": [
+        {
+          "task_id": "B-S5-T01",
+          "title": "API mapping and screen flow finalization",
+          "deliverables": [
+            "docs/api-mapping.md complete",
+            "docs/screen-flows.md complete",
+            "Remove dead UI placeholders"
+          ],
+          "depends_on": ["B-S4-T03", "A-S5-T01", "A-S5-T02"],
+          "blocks": []
+        }
+      ]
+    }
+  ]
+}

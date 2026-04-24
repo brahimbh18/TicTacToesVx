@@ -1,0 +1,392 @@
+{
+  "engineer": {
+    "id": "junior_a",
+    "role": "Backend Engineer",
+    "stack": ["Go", "PostgreSQL", "Docker"]
+  },
+  "traceability_protocol": {
+    "version": "1.0",
+    "objective": "Ensure every backend change is reproducible, auditable, and understandable by any LLM/agent or human reviewer.",
+    "required_artifacts_per_task": [
+      "docs/traceability/junior_a/<slice_id>/<task_id>/worklog.md",
+      "docs/traceability/junior_a/<slice_id>/<task_id>/change_manifest.json",
+      "docs/traceability/junior_a/<slice_id>/<task_id>/test_evidence.md",
+      "docs/traceability/junior_a/<slice_id>/<task_id>/handoff.md"
+    ],
+    "worklog_template_rules": {
+      "must_include_sections": [
+        "Task Header",
+        "Intent",
+        "Files Changed",
+        "API/Contract Impact",
+        "DB/Migration Impact",
+        "Implementation Notes",
+        "Risks and Tradeoffs",
+        "Next Step"
+      ],
+      "task_header_fields": [
+        "slice_id",
+        "task_id",
+        "engineer_id",
+        "branch_name",
+        "commit_shas",
+        "date_utc",
+        "status"
+      ]
+    },
+    "change_manifest_schema": {
+      "slice_id": "string",
+      "task_id": "string",
+      "engineer_id": "junior_a",
+      "branch": "string",
+      "commits": ["string"],
+      "files_added": ["string"],
+      "files_modified": ["string"],
+      "files_deleted": ["string"],
+      "api_endpoints_added": ["METHOD /path"],
+      "api_endpoints_modified": ["METHOD /path"],
+      "api_endpoints_removed": ["METHOD /path"],
+      "migrations_added": ["string"],
+      "env_vars_added": ["string"],
+      "breaking_changes": ["string"],
+      "related_tasks": ["string"],
+      "pr_number": "number|null"
+    },
+    "test_evidence_rules": {
+      "must_include": [
+        "Exact command executed",
+        "Test scope (unit/integration/manual)",
+        "Observed output summary",
+        "Failure notes (if any)",
+        "Retest evidence after fix"
+      ],
+      "manual_test_format": [
+        "Preconditions",
+        "Steps",
+        "Expected Result",
+        "Actual Result"
+      ]
+    },
+    "handoff_rules": {
+      "must_include": [
+        "What is done",
+        "What is pending",
+        "How frontend should consume this change",
+        "Known limitations",
+        "Rollback plan"
+      ]
+    },
+    "naming_conventions": {
+      "slice_id_format": "S0|S1|S2|S3|S4|S5",
+      "task_id_format": "A-S<slice_number>-T<nn>",
+      "branch_format": "feat/<task_id>-<short-kebab-desc>",
+      "commit_message_format": "<task_id>: <imperative summary>",
+      "artifact_path_format": "docs/traceability/junior_a/<slice_id>/<task_id>/..."
+    },
+    "status_model": [
+      "todo",
+      "in_progress",
+      "blocked",
+      "ready_for_review",
+      "done"
+    ],
+    "update_frequency": {
+      "worklog": "at least once per day and on every status change",
+      "change_manifest": "updated with every commit batch",
+      "test_evidence": "updated after every test run",
+      "handoff": "required before PR review request"
+    },
+    "cross_agent_linking_rules": {
+      "every_task_must_reference": [
+        "upstream_dependency_task_ids",
+        "downstream_consumer_task_ids"
+      ],
+      "consumer_example": "If backend adds endpoint, reference Junior B task consuming that endpoint.",
+      "link_format": "A-Sx-Tnn -> B-Sx-Tnn"
+    },
+    "review_gate_checklist": [
+      "All required artifacts exist",
+      "change_manifest matches actual diff",
+      "OpenAPI updated when endpoint changed",
+      "Migration and rollback notes present when DB changed",
+      "Test evidence included and reproducible",
+      "Handoff complete and linked to dependent task"
+    ]
+  },
+  "definition_of_done": [
+    "Implementation completed for task scope",
+    "All traceability artifacts created and complete",
+    "Tests pass and evidence logged",
+    "Dependencies and downstream tasks linked",
+    "PR opened with task_id and artifact links"
+  ],
+  "slices": [
+    {
+      "slice_id": "S0",
+      "name": "Foundation",
+      "tasks": [
+        {
+          "task_id": "A-S0-T01",
+          "title": "Initialize backend skeleton",
+          "deliverables": [
+            "Create backend directory layout",
+            "Wire main.go -> app bootstrap -> router",
+            "Add base config loader"
+          ],
+          "depends_on": [],
+          "blocks": ["A-S0-T02", "A-S0-T03"]
+        },
+        {
+          "task_id": "A-S0-T02",
+          "title": "Implement health endpoint",
+          "deliverables": [
+            "GET /health returns 200 and service metadata"
+          ],
+          "depends_on": ["A-S0-T01"],
+          "blocks": ["A-S1-T01"]
+        },
+        {
+          "task_id": "A-S0-T03",
+          "title": "Docker + PostgreSQL bootstrap",
+          "deliverables": [
+            "Dockerfile for API",
+            "docker-compose for api + postgres",
+            "Environment wiring"
+          ],
+          "depends_on": ["A-S0-T01"],
+          "blocks": ["A-S0-T04", "A-S1-T01"]
+        },
+        {
+          "task_id": "A-S0-T04",
+          "title": "Migration runner + users table",
+          "deliverables": [
+            "Migration runner script/setup",
+            "0001_init.sql with users table"
+          ],
+          "depends_on": ["A-S0-T03"],
+          "blocks": ["A-S1-T01"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S1",
+      "name": "Auth Vertical",
+      "tasks": [
+        {
+          "task_id": "A-S1-T01",
+          "title": "Register endpoint",
+          "deliverables": [
+            "POST /api/v1/auth/register",
+            "Password hashing at write time"
+          ],
+          "depends_on": ["A-S0-T04"],
+          "blocks": ["A-S1-T02", "B-S1-T01"]
+        },
+        {
+          "task_id": "A-S1-T02",
+          "title": "Login endpoint + JWT issue",
+          "deliverables": [
+            "POST /api/v1/auth/login",
+            "JWT token generation"
+          ],
+          "depends_on": ["A-S1-T01"],
+          "blocks": ["A-S1-T03", "B-S1-T01"]
+        },
+        {
+          "task_id": "A-S1-T03",
+          "title": "Auth middleware + users/me endpoint",
+          "deliverables": [
+            "Bearer token middleware",
+            "GET /api/v1/users/me"
+          ],
+          "depends_on": ["A-S1-T02"],
+          "blocks": ["B-S1-T02"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S2",
+      "name": "Game Rules + AI Core",
+      "tasks": [
+        {
+          "task_id": "A-S2-T01",
+          "title": "Variable board rules engine",
+          "deliverables": [
+            "Rules for NxN win/draw/turn validation",
+            "Unit tests for 3x3 and 4x4"
+          ],
+          "depends_on": [],
+          "blocks": ["A-S2-T02", "A-S2-T03", "A-S2-T04", "B-S2-T01"]
+        },
+        {
+          "task_id": "A-S2-T02",
+          "title": "Easy AI random strategy",
+          "deliverables": [
+            "Legal random move selector"
+          ],
+          "depends_on": ["A-S2-T01"],
+          "blocks": ["B-S2-T02"]
+        },
+        {
+          "task_id": "A-S2-T03",
+          "title": "Medium AI depth-limited minimax",
+          "deliverables": [
+            "Depth-limited minimax implementation",
+            "Heuristic evaluation notes"
+          ],
+          "depends_on": ["A-S2-T01"],
+          "blocks": ["B-S2-T02"]
+        },
+        {
+          "task_id": "A-S2-T04",
+          "title": "Hard AI full minimax",
+          "deliverables": [
+            "Full minimax for feasible board sizes",
+            "Performance notes and limits"
+          ],
+          "depends_on": ["A-S2-T01"],
+          "blocks": ["B-S2-T02"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S3",
+      "name": "Friends System",
+      "tasks": [
+        {
+          "task_id": "A-S3-T01",
+          "title": "Friends schema migration",
+          "deliverables": [
+            "friend_requests table",
+            "friends table",
+            "indexes and constraints"
+          ],
+          "depends_on": [],
+          "blocks": ["A-S3-T02", "A-S3-T03", "A-S3-T04", "A-S3-T05"]
+        },
+        {
+          "task_id": "A-S3-T02",
+          "title": "User search endpoint",
+          "deliverables": [
+            "GET /api/v1/users/search?username="
+          ],
+          "depends_on": ["A-S3-T01"],
+          "blocks": ["B-S3-T01"]
+        },
+        {
+          "task_id": "A-S3-T03",
+          "title": "Create/list friend requests",
+          "deliverables": [
+            "POST /api/v1/friends/requests",
+            "GET /api/v1/friends/requests/incoming"
+          ],
+          "depends_on": ["A-S3-T01"],
+          "blocks": ["B-S3-T02"]
+        },
+        {
+          "task_id": "A-S3-T04",
+          "title": "Accept/decline request",
+          "deliverables": [
+            "POST /api/v1/friends/requests/{requestId}/accept",
+            "POST /api/v1/friends/requests/{requestId}/decline"
+          ],
+          "depends_on": ["A-S3-T03"],
+          "blocks": ["B-S3-T03"]
+        },
+        {
+          "task_id": "A-S3-T05",
+          "title": "Friends list endpoint",
+          "deliverables": [
+            "GET /api/v1/friends"
+          ],
+          "depends_on": ["A-S3-T04"],
+          "blocks": ["B-S3-T04"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S4",
+      "name": "Invitations + Online Match",
+      "tasks": [
+        {
+          "task_id": "A-S4-T01",
+          "title": "Invitations/matches/moves schema",
+          "deliverables": [
+            "invitations table",
+            "matches table",
+            "moves table"
+          ],
+          "depends_on": [],
+          "blocks": ["A-S4-T02", "A-S4-T03", "A-S4-T04"]
+        },
+        {
+          "task_id": "A-S4-T02",
+          "title": "Invitation endpoints",
+          "deliverables": [
+            "POST /api/v1/invitations",
+            "GET /api/v1/invitations/incoming",
+            "POST /api/v1/invitations/{invitationId}/accept",
+            "POST /api/v1/invitations/{invitationId}/decline"
+          ],
+          "depends_on": ["A-S4-T01"],
+          "blocks": ["B-S4-T01"]
+        },
+        {
+          "task_id": "A-S4-T03",
+          "title": "Match lifecycle endpoints",
+          "deliverables": [
+            "POST /api/v1/matches",
+            "GET /api/v1/matches/{matchId}",
+            "POST /api/v1/matches/{matchId}/resign"
+          ],
+          "depends_on": ["A-S4-T01"],
+          "blocks": ["B-S4-T02"]
+        },
+        {
+          "task_id": "A-S4-T04",
+          "title": "Move submission endpoint with validation",
+          "deliverables": [
+            "POST /api/v1/matches/{matchId}/moves",
+            "Out-of-turn and illegal move rejection"
+          ],
+          "depends_on": ["A-S4-T03"],
+          "blocks": ["B-S4-T03"]
+        }
+      ]
+    },
+    {
+      "slice_id": "S5",
+      "name": "Hardening",
+      "tasks": [
+        {
+          "task_id": "A-S5-T01",
+          "title": "OpenAPI completion and consistency pass",
+          "deliverables": [
+            "Full docs/api/openapi.yaml parity with code"
+          ],
+          "depends_on": ["A-S4-T04"],
+          "blocks": ["B-S5-T01"]
+        },
+        {
+          "task_id": "A-S5-T02",
+          "title": "Error format standardization",
+          "deliverables": [
+            "Unified error response across all handlers"
+          ],
+          "depends_on": ["A-S4-T04"],
+          "blocks": ["B-S5-T01"]
+        },
+        {
+          "task_id": "A-S5-T03",
+          "title": "Auth rate limiting + seed script",
+          "deliverables": [
+            "Rate limiter for auth endpoints",
+            "Seed script for demo users"
+          ],
+          "depends_on": ["A-S5-T02"],
+          "blocks": []
+        }
+      ]
+    }
+  ]
+}

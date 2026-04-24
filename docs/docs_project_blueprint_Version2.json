@@ -1,0 +1,433 @@
+{
+  "project": {
+    "name": "TicTacToesVx",
+    "repo": "brahimbh18/TicTacToesVx",
+    "date": "2026-04-24",
+    "architecture": {
+      "frontend": "Android Java MVVM",
+      "backend": "Go + PostgreSQL + Docker",
+      "development_style": "vertical_slices",
+      "llm_optimized": true
+    }
+  },
+  "api": {
+    "base_path": "/api/v1",
+    "error_format": {
+      "error": {
+        "code": "string",
+        "message": "string"
+      }
+    },
+    "endpoints": [
+      {
+        "tag": "auth",
+        "method": "POST",
+        "path": "/auth/register",
+        "auth_required": false,
+        "request_body": {
+          "username": "string",
+          "password": "string"
+        },
+        "responses": {
+          "201": {
+            "id": "uuid",
+            "username": "string",
+            "token": "jwt"
+          }
+        }
+      },
+      {
+        "tag": "auth",
+        "method": "POST",
+        "path": "/auth/login",
+        "auth_required": false,
+        "request_body": {
+          "username": "string",
+          "password": "string"
+        },
+        "responses": {
+          "200": {
+            "id": "uuid",
+            "username": "string",
+            "token": "jwt"
+          }
+        }
+      },
+      {
+        "tag": "users",
+        "method": "GET",
+        "path": "/users/me",
+        "auth_required": true,
+        "responses": {
+          "200": {
+            "id": "uuid",
+            "username": "string"
+          }
+        }
+      },
+      {
+        "tag": "users",
+        "method": "GET",
+        "path": "/users/search",
+        "auth_required": true,
+        "query_params": {
+          "username": "string"
+        },
+        "responses": {
+          "200": [
+            {
+              "id": "uuid",
+              "username": "string"
+            }
+          ]
+        }
+      },
+      {
+        "tag": "friends",
+        "method": "GET",
+        "path": "/friends",
+        "auth_required": true,
+        "responses": {
+          "200": [
+            {
+              "id": "uuid",
+              "username": "string"
+            }
+          ]
+        }
+      },
+      {
+        "tag": "friends",
+        "method": "POST",
+        "path": "/friends/requests",
+        "auth_required": true,
+        "request_body": {
+          "toUserId": "uuid"
+        },
+        "responses": {
+          "201": {
+            "requestId": "uuid",
+            "status": "pending"
+          }
+        }
+      },
+      {
+        "tag": "friends",
+        "method": "GET",
+        "path": "/friends/requests/incoming",
+        "auth_required": true,
+        "responses": {
+          "200": [
+            {
+              "requestId": "uuid",
+              "fromUser": {
+                "id": "uuid",
+                "username": "string"
+              },
+              "status": "pending"
+            }
+          ]
+        }
+      },
+      {
+        "tag": "friends",
+        "method": "POST",
+        "path": "/friends/requests/{requestId}/accept",
+        "auth_required": true,
+        "path_params": {
+          "requestId": "uuid"
+        },
+        "responses": {
+          "200": {
+            "ok": true
+          }
+        }
+      },
+      {
+        "tag": "friends",
+        "method": "POST",
+        "path": "/friends/requests/{requestId}/decline",
+        "auth_required": true,
+        "path_params": {
+          "requestId": "uuid"
+        },
+        "responses": {
+          "200": {
+            "ok": true
+          }
+        }
+      },
+      {
+        "tag": "invitations",
+        "method": "POST",
+        "path": "/invitations",
+        "auth_required": true,
+        "request_body": {
+          "inviteeUserId": "uuid",
+          "boardSize": "integer"
+        },
+        "responses": {
+          "201": {
+            "invitationId": "uuid",
+            "status": "pending"
+          }
+        }
+      },
+      {
+        "tag": "invitations",
+        "method": "GET",
+        "path": "/invitations/incoming",
+        "auth_required": true,
+        "responses": {
+          "200": [
+            {
+              "invitationId": "uuid",
+              "fromUser": {
+                "id": "uuid",
+                "username": "string"
+              },
+              "boardSize": "integer"
+            }
+          ]
+        }
+      },
+      {
+        "tag": "invitations",
+        "method": "POST",
+        "path": "/invitations/{invitationId}/accept",
+        "auth_required": true,
+        "path_params": {
+          "invitationId": "uuid"
+        },
+        "responses": {
+          "200": {
+            "matchId": "uuid"
+          }
+        }
+      },
+      {
+        "tag": "invitations",
+        "method": "POST",
+        "path": "/invitations/{invitationId}/decline",
+        "auth_required": true,
+        "path_params": {
+          "invitationId": "uuid"
+        },
+        "responses": {
+          "200": {
+            "ok": true
+          }
+        }
+      },
+      {
+        "tag": "matches",
+        "method": "POST",
+        "path": "/matches",
+        "auth_required": true,
+        "request_body": {
+          "mode": "online_friend|online_random|ai|local",
+          "boardSize": "integer",
+          "aiDifficulty": "easy|medium|hard|null",
+          "inviteeUserId": "uuid|null"
+        },
+        "responses": {
+          "201": {
+            "matchId": "uuid",
+            "status": "waiting|active",
+            "boardSize": "integer",
+            "players": [
+              {
+                "userId": "uuid",
+                "symbol": "X|O"
+              }
+            ],
+            "nextTurn": "X|O"
+          }
+        }
+      },
+      {
+        "tag": "matches",
+        "method": "GET",
+        "path": "/matches/{matchId}",
+        "auth_required": true,
+        "path_params": {
+          "matchId": "uuid"
+        },
+        "responses": {
+          "200": {
+            "matchId": "uuid",
+            "status": "waiting|active|finished",
+            "boardSize": "integer",
+            "board": ["string"],
+            "nextTurn": "X|O",
+            "winner": "X|O|draw|null"
+          }
+        }
+      },
+      {
+        "tag": "matches",
+        "method": "POST",
+        "path": "/matches/{matchId}/moves",
+        "auth_required": true,
+        "path_params": {
+          "matchId": "uuid"
+        },
+        "request_body": {
+          "cellIndex": "integer"
+        },
+        "responses": {
+          "200": {
+            "applied": true,
+            "board": ["string"],
+            "nextTurn": "X|O",
+            "winner": "X|O|draw|null",
+            "status": "active|finished"
+          }
+        }
+      },
+      {
+        "tag": "matches",
+        "method": "POST",
+        "path": "/matches/{matchId}/resign",
+        "auth_required": true,
+        "path_params": {
+          "matchId": "uuid"
+        },
+        "responses": {
+          "200": {
+            "ok": true,
+            "winner": "X|O"
+          }
+        }
+      }
+    ]
+  },
+  "directories": {
+    "backend_root": "backend/",
+    "backend_tree": [
+      "cmd/api/main.go",
+      "internal/app/app.go",
+      "internal/config/config.go",
+      "internal/db/postgres.go",
+      "internal/db/migrations/0001_init.sql",
+      "internal/transport/http/router.go",
+      "internal/transport/http/middleware/auth_middleware.go",
+      "internal/transport/http/middleware/logging_middleware.go",
+      "internal/transport/http/middleware/recover_middleware.go",
+      "internal/transport/http/handlers/auth_handler.go",
+      "internal/transport/http/handlers/users_handler.go",
+      "internal/transport/http/handlers/friends_handler.go",
+      "internal/transport/http/handlers/invitations_handler.go",
+      "internal/transport/http/handlers/matches_handler.go",
+      "internal/transport/http/dto/auth_dto.go",
+      "internal/transport/http/dto/users_dto.go",
+      "internal/transport/http/dto/friends_dto.go",
+      "internal/transport/http/dto/invitations_dto.go",
+      "internal/transport/http/dto/matches_dto.go",
+      "internal/domain/user/entity.go",
+      "internal/domain/user/repository.go",
+      "internal/domain/user/service.go",
+      "internal/domain/friend/entity.go",
+      "internal/domain/friend/repository.go",
+      "internal/domain/friend/service.go",
+      "internal/domain/invitation/entity.go",
+      "internal/domain/invitation/repository.go",
+      "internal/domain/invitation/service.go",
+      "internal/domain/match/entity.go",
+      "internal/domain/match/repository.go",
+      "internal/domain/match/service.go",
+      "internal/domain/match/rules.go",
+      "internal/domain/ai/service.go",
+      "internal/domain/ai/minimax.go",
+      "internal/domain/ai/heuristic.go",
+      "internal/domain/ai/random.go",
+      "internal/repository/postgres/user_repo.go",
+      "internal/repository/postgres/friend_repo.go",
+      "internal/repository/postgres/invitation_repo.go",
+      "internal/repository/postgres/match_repo.go",
+      "internal/security/jwt.go",
+      "internal/security/password.go",
+      "internal/shared/errors/errors.go",
+      "internal/shared/types/common.go",
+      "pkg/logger/logger.go",
+      "docs/api/openapi.yaml",
+      "docs/architecture/backend-tree.md",
+      "docs/architecture/data-model.md",
+      "docs/architecture/vertical-slices.md",
+      "Dockerfile",
+      "docker-compose.yml",
+      ".env.example",
+      "Makefile",
+      "go.mod"
+    ],
+    "frontend_root": "android-app/",
+    "frontend_tree": [
+      "app/src/main/java/com/brahimbh18/tictactoesvx/App.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/core/network/ApiClient.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/core/network/ApiService.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/core/network/AuthInterceptor.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/core/storage/TokenStorage.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/core/util/Result.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/core/util/Constants.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/core/di/ServiceLocator.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/remote/dto/AuthDtos.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/remote/dto/UserDtos.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/remote/dto/FriendDtos.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/remote/dto/InvitationDtos.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/remote/dto/MatchDtos.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/repository/AuthRepository.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/repository/UserRepository.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/repository/FriendRepository.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/repository/InvitationRepository.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/data/repository/MatchRepository.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/model/User.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/model/Friend.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/model/Invitation.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/model/Match.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/model/Move.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/model/GameMode.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/model/AIDifficulty.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/RegisterUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/LoginUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/SearchUsersUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/GetFriendsUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/SendFriendRequestUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/CreateMatchUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/MakeMoveUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/RespondInvitationUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/domain/usecase/PlayAIMoveUseCase.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/auth/login/LoginActivity.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/auth/login/LoginViewModel.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/auth/register/RegisterActivity.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/auth/register/RegisterViewModel.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/home/HomeActivity.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/home/HomeViewModel.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/friends/FriendsActivity.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/friends/FriendsViewModel.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/invitations/InvitationsActivity.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/invitations/InvitationsViewModel.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/game/GameActivity.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/game/GameViewModel.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/game/BoardAdapter.java",
+      "app/src/main/java/com/brahimbh18/tictactoesvx/ui/common/UiState.java",
+      "app/src/main/res/layout/activity_login.xml",
+      "app/src/main/res/layout/activity_register.xml",
+      "app/src/main/res/layout/activity_home.xml",
+      "app/src/main/res/layout/activity_friends.xml",
+      "app/src/main/res/layout/activity_invitations.xml",
+      "app/src/main/res/layout/activity_game.xml",
+      "app/src/main/res/layout/item_board_cell.xml",
+      "app/src/main/res/values/colors.xml",
+      "app/src/main/res/values/themes.xml",
+      "app/src/main/res/values/strings.xml",
+      "app/src/main/res/values/dimens.xml",
+      "docs/frontend-tree.md",
+      "docs/screen-flows.md",
+      "docs/api-mapping.md"
+    ]
+  },
+  "task_files": {
+    "junior_a": "docs/tasks/junior_a_tasks.json",
+    "junior_b": "docs/tasks/junior_b_tasks.json"
+  }
+}
