@@ -1,4 +1,4 @@
-package com.example.frontend;
+package com.brahimbh18.tictactoesvx;
 
 import org.junit.Test;
 

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="12dp">
+
+        <EditText
+            android:id="@+id/etSearchUsername"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/search_username" />
+
+        <Button
+            android:id="@+id/btnSearchUsers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/search_users" />
+
+        <Button
+            android:id="@+id/btnSendRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/send_request" />
+
+        <TextView
+            android:id="@+id/tvSearchResults"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_state" />
+
+        <Button
+            android:id="@+id/btnLoadRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/load_requests" />
+
+        <EditText
+            android:id="@+id/etRequestId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/request_id_hint" />
+
+        <Button
+            android:id="@+id/btnAcceptRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/accept" />
+
+        <Button
+            android:id="@+id/btnDeclineRequest"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/decline" />
+
+        <TextView
+            android:id="@+id/tvIncomingRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_state" />
+
+        <Button
+            android:id="@+id/btnLoadFriends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/load_friends" />
+
+        <TextView
+            android:id="@+id/tvFriendsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_state" />
+
+    </LinearLayout>
+</ScrollView>
