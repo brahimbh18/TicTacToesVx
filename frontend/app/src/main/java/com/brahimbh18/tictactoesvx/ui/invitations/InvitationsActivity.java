@@ -46,9 +46,11 @@ public class InvitationsActivity extends AppCompatActivity {
         if (invitations == null || invitations.isEmpty()) return getString(R.string.empty_state);
         StringBuilder sb = new StringBuilder();
         for (Invitation invitation : invitations) {
-            sb.append(invitation.invitationId, 0, Math.min(8, invitation.invitationId.length()))
+            String invitationId = invitation.invitationId == null ? "unknown" : invitation.invitationId;
+            String fromUsername = invitation.fromUsername == null ? "unknown" : invitation.fromUsername;
+            sb.append(invitationId, 0, Math.min(8, invitationId.length()))
                     .append("...")
-                    .append(" from ").append(invitation.fromUsername)
+                    .append(" from ").append(fromUsername)
                     .append(" board ").append(invitation.boardSize)
                     .append("\n");
         }

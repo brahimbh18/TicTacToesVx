@@ -77,8 +77,10 @@ public class FriendsActivity extends AppCompatActivity {
         if (requests == null || requests.isEmpty()) return getString(R.string.empty_state);
         StringBuilder sb = new StringBuilder();
         for (FriendRequest request : requests) {
-            sb.append(request.requestId, 0, Math.min(8, request.requestId.length()))
-                    .append("...").append(" from ").append(request.fromUsername).append("\n");
+            String requestId = request.requestId == null ? "unknown" : request.requestId;
+            String fromUsername = request.fromUsername == null ? "unknown" : request.fromUsername;
+            sb.append(requestId, 0, Math.min(8, requestId.length()))
+                    .append("...").append(" from ").append(fromUsername).append("\n");
         }
         return sb.toString();
     }
