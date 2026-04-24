@@ -26,7 +26,7 @@ public class LoginActivity extends AppCompatActivity {
         Button loginBtn = findViewById(R.id.btnLogin);
         TextView registerLink = findViewById(R.id.tvRegisterLink);
 
-        loginBtn.setOnClickListener(v -> viewModel.login(username.getText().toString().trim(), password.getText().toString()));
+        loginBtn.setOnClickListener(v -> viewModel.login(username.getText().toString().trim(), password.getText().toString().trim()));
         registerLink.setOnClickListener(v -> startActivity(new Intent(this, RegisterActivity.class)));
 
         viewModel.getLoginState().observe(this, state -> {

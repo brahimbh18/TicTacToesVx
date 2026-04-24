@@ -30,7 +30,13 @@ public class MatchRepository {
         if (cellIndex < 0 || cellIndex >= board.size() || !board.get(cellIndex).isEmpty()) {
             return Result.failure("Invalid move");
         }
-        board.set(cellIndex, match.nextTurn);
+        String playedSymbol = match.nextTurn;
+        board.set(cellIndex, playedSymbol);
+        if (hasWinner(board, match.boardSize, playedSymbol)) {
+            match.status = "finished";
+            match.winner = playedSymbol;
+            return Result.success(match);
+        }
         match.nextTurn = "X".equals(match.nextTurn) ? "O" : "X";
         if (!board.contains("")) {
             match.status = "finished";
@@ -45,5 +51,33 @@ public class MatchRepository {
         match.status = "finished";
         match.winner = "X".equals(match.nextTurn) ? "O" : "X";
         return Result.success(match);
+    }
+
+    private boolean hasWinner(List<String> board, int size, String symbol) {
+        for (int i = 0; i < size; i++) {
+            boolean rowWin = true;
+            boolean colWin = true;
+            for (int j = 0; j < size; j++) {
+                if (!symbol.equals(board.get(i * size + j))) {
+                    rowWin = false;
+                }
+                if (!symbol.equals(board.get(j * size + i))) {
+                    colWin = false;
+                }
+            }
+            if (rowWin || colWin) return true;
+        }
+
+        boolean diagWin = true;
+        boolean antiDiagWin = true;
+        for (int i = 0; i < size; i++) {
+            if (!symbol.equals(board.get(i * size + i))) {
+                diagWin = false;
+            }
+            if (!symbol.equals(board.get(i * size + (size - 1 - i)))) {
+                antiDiagWin = false;
+            }
+        }
+        return diagWin || antiDiagWin;
     }
 }

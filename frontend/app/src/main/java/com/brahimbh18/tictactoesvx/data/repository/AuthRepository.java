@@ -14,7 +14,7 @@ public class AuthRepository {
 
     public Result<String> register(String username, String password) {
         if (username == null || username.trim().isEmpty() || password == null || password.length() < 8) {
-            return Result.failure("Password must be at least 8 characters");
+            return Result.failure("Username is required and password must be at least 8 characters");
         }
         if (InMemoryStore.USERS.containsKey(username)) {
             return Result.failure("Username already exists");
